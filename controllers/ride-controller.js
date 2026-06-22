@@ -199,7 +199,9 @@ const updateStar = async (req, res) => {
         }
         
         await user.save();
-        res.status(200);
+
+        // ✅ FIX HERE
+        res.status(200).send({ message: "Star updated successfully" });
 
     } catch (err) {
         console.log(err);
