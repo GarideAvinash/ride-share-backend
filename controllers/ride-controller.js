@@ -185,8 +185,8 @@ const updateStar = async (req, res) => {
         const userId = req.userId;
         const rideId = req.params.id;
 
-        const user = await User.findOne({ userId });
-        const ride = await Ride.findOne({ _id: rideId });
+        const user = await User.findById(userId);
+        const ride = await Ride.findById(rideId);
 
         if (!user || !ride) {
             return res.status(404).send({ error: 'User or Ride not found.' });
@@ -200,14 +200,13 @@ const updateStar = async (req, res) => {
         
         await user.save();
 
-        // ✅ FIX HERE
         res.status(200).send({ message: "Star updated successfully" });
 
     } catch (err) {
         console.log(err);
         res.status(500).send({ message: "Internal server error." });
     }
-}
+};
 
 const getFilteredRides = async (req, res) => {
     try {
