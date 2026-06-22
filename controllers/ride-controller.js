@@ -15,45 +15,31 @@ const addRideDetails = async (req, res) => {
         const userId = req.userId;
 
         let src_coords, dst_coords;
-
-        // 🔹 SOURCE
+        
         const src_response = await axios.get('https://api.olamaps.io/places/v1/geocode', {
             params: {
-              address: src,
+              address : src,
               api_key: process.env.OLA_MAPS_API
             }
         });
-
-        if (
-            src_response.data.status === 'ok' &&
-            src_response.data.geocodingResults &&
-            src_response.data.geocodingResults.length > 0 &&
-            src_response.data.geocodingResults[0].geometry &&
-            src_response.data.geocodingResults[0].geometry.location
-        ) {
+ 
+        if (src_response.data.status === 'ok') {
             src_coords = src_response.data.geocodingResults[0].geometry.location;
-        } else {
-            return res.status(400).send({ message: "Invalid source location." });
+        }else {
+            return res.status(400).send({ message: "Invalid or empty address parameter."});
         }
 
-        // 🔹 DESTINATION
         const dst_response = await axios.get('https://api.olamaps.io/places/v1/geocode', {
             params: {
-              address: dst,
+              address : dst,
               api_key: process.env.OLA_MAPS_API
             }
         });
 
-        if (
-            dst_response.data.status === 'ok' &&
-            dst_response.data.geocodingResults &&
-            dst_response.data.geocodingResults.length > 0 &&
-            dst_response.data.geocodingResults[0].geometry &&
-            dst_response.data.geocodingResults[0].geometry.location
-        ) {
+        if (dst_response.data.status === 'ok') {
             dst_coords = dst_response.data.geocodingResults[0].geometry.location;
-        } else {
-            return res.status(400).send({ message: "Invalid destination location." });
+        }else {
+            return res.status(400).send({ message: "Invalid or empty address parameter."});
         }
 
         const newRide = new Ride({
@@ -80,9 +66,9 @@ const addRideDetails = async (req, res) => {
         } else {
             res.status(404).send({ message: "User not found." });
         }
-
+        
     } catch (err) {
-        console.error("ERROR ADD RIDE:", err);
+        console.error(err);
         res.status(500).send({ message: "Failed to add the Ride details. Please try again later." });
     }
 };
